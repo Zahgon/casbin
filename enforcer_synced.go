@@ -1,22 +1,7 @@
-// Copyright 2017 The casbin Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package casbin
 
 import (
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/casbin/govaluate"
@@ -25,7 +10,6 @@ import (
 	"github.com/casbin/casbin/v3/rbac"
 )
 
-// SyncedEnforcer wraps Enforcer and provides synchronized access.
 type SyncedEnforcer struct {
 	*Enforcer
 	m               sync.RWMutex
@@ -33,654 +17,407 @@ type SyncedEnforcer struct {
 	autoLoadRunning int32
 }
 
-// NewSyncedEnforcer creates a synchronized enforcer via file or DB.
 func NewSyncedEnforcer(params ...interface{}) (*SyncedEnforcer, error) {
-	e := &SyncedEnforcer{}
-	var err error
-	e.Enforcer, err = NewEnforcer(params...)
-	if err != nil {
-		return nil, err
-	}
-
-	e.stopAutoLoad = make(chan struct{}, 1)
-	e.autoLoadRunning = 0
-	return e, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetLock return the private RWMutex lock.
-func (e *SyncedEnforcer) GetLock() *sync.RWMutex {
-	return &e.m
-}
+func (e *SyncedEnforcer) GetLock() *sync.RWMutex { _ = "STUB: not implemented"; return nil }
 
-// GetRoleManager gets the current role manager with synchronization.
 func (e *SyncedEnforcer) GetRoleManager() rbac.RoleManager {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetRoleManager()
+	_ = "STUB: not implemented"
+	return *new(rbac.RoleManager)
 }
 
-// GetNamedRoleManager gets the role manager for the named policy with synchronization.
 func (e *SyncedEnforcer) GetNamedRoleManager(ptype string) rbac.RoleManager {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetNamedRoleManager(ptype)
+	_ = "STUB: not implemented"
+	return *new(rbac.RoleManager)
 }
 
-// SetRoleManager sets the current role manager with synchronization.
-func (e *SyncedEnforcer) SetRoleManager(rm rbac.RoleManager) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	e.Enforcer.SetRoleManager(rm)
-}
+func (e *SyncedEnforcer) SetRoleManager(rm rbac.RoleManager) { _ = "STUB: not implemented"; return }
 
-// SetNamedRoleManager sets the role manager for the named policy with synchronization.
 func (e *SyncedEnforcer) SetNamedRoleManager(ptype string, rm rbac.RoleManager) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	e.Enforcer.SetNamedRoleManager(ptype, rm)
+	_ = "STUB: not implemented"
+	return
 }
 
-// IsAutoLoadingRunning check if SyncedEnforcer is auto loading policies.
-func (e *SyncedEnforcer) IsAutoLoadingRunning() bool {
-	return atomic.LoadInt32(&(e.autoLoadRunning)) != 0
-}
+func (e *SyncedEnforcer) IsAutoLoadingRunning() bool { _ = "STUB: not implemented"; return false }
 
-// StartAutoLoadPolicy starts a go routine that will every specified duration call LoadPolicy.
-func (e *SyncedEnforcer) StartAutoLoadPolicy(d time.Duration) {
-	// Don't start another goroutine if there is already one running
-	if !atomic.CompareAndSwapInt32(&e.autoLoadRunning, 0, 1) {
-		return
-	}
+func (e *SyncedEnforcer) StartAutoLoadPolicy(d time.Duration) { _ = "STUB: not implemented"; return }
 
-	ticker := time.NewTicker(d)
-	go func() {
-		defer func() {
-			ticker.Stop()
-			atomic.StoreInt32(&(e.autoLoadRunning), int32(0))
-		}()
-		n := 1
-		for {
-			select {
-			case <-ticker.C:
-				// error intentionally ignored
-				_ = e.LoadPolicy()
-				// Uncomment this line to see when the policy is loaded.
-				// log.Print("Load policy for time: ", n)
-				n++
-			case <-e.stopAutoLoad:
-				return
-			}
-		}
-	}()
-}
+func (e *SyncedEnforcer) StopAutoLoadPolicy() { _ = "STUB: not implemented"; return }
 
-// StopAutoLoadPolicy causes the go routine to exit.
-func (e *SyncedEnforcer) StopAutoLoadPolicy() {
-	if e.IsAutoLoadingRunning() {
-		e.stopAutoLoad <- struct{}{}
-	}
-}
-
-// SetWatcher sets the current watcher.
 func (e *SyncedEnforcer) SetWatcher(watcher persist.Watcher) error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SetWatcher(watcher)
-}
-
-// LoadModel reloads the model from the model CONF file.
-func (e *SyncedEnforcer) LoadModel() error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.LoadModel()
-}
-
-// ClearPolicy clears all policy.
-func (e *SyncedEnforcer) ClearPolicy() {
-	e.m.Lock()
-	defer e.m.Unlock()
-	e.Enforcer.ClearPolicy()
-}
-
-// LoadPolicy reloads the policy from file/database.
-func (e *SyncedEnforcer) LoadPolicy() error {
-	e.m.RLock()
-	newModel, err := e.loadPolicyFromAdapter(e.model)
-	e.m.RUnlock()
-	if err != nil {
-		return err
-	}
-	e.m.Lock()
-	err = e.applyModifiedModel(newModel)
-	e.m.Unlock()
-	if err != nil {
-		return err
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
-// LoadFilteredPolicy reloads a filtered policy from file/database.
+func (e *SyncedEnforcer) LoadModel() error { _ = "STUB: not implemented"; return nil }
+
+func (e *SyncedEnforcer) ClearPolicy() { _ = "STUB: not implemented"; return }
+
+func (e *SyncedEnforcer) LoadPolicy() error { _ = "STUB: not implemented"; return nil }
+
 func (e *SyncedEnforcer) LoadFilteredPolicy(filter interface{}) error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.LoadFilteredPolicy(filter)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// LoadIncrementalFilteredPolicy reloads a filtered policy from file/database.
 func (e *SyncedEnforcer) LoadIncrementalFilteredPolicy(filter interface{}) error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.LoadIncrementalFilteredPolicy(filter)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// SavePolicy saves the current policy (usually after changed with Casbin API) back to file/database.
-func (e *SyncedEnforcer) SavePolicy() error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SavePolicy()
-}
+func (e *SyncedEnforcer) SavePolicy() error { _ = "STUB: not implemented"; return nil }
 
-// BuildRoleLinks manually rebuild the role inheritance relations.
-func (e *SyncedEnforcer) BuildRoleLinks() error {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.BuildRoleLinks()
-}
+func (e *SyncedEnforcer) BuildRoleLinks() error { _ = "STUB: not implemented"; return nil }
 
-// Enforce decides whether a "subject" can access a "object" with the operation "action", input parameters are usually: (sub, obj, act).
 func (e *SyncedEnforcer) Enforce(rvals ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.Enforce(rvals...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// EnforceWithMatcher use a custom matcher to decides whether a "subject" can access a "object" with the operation "action", input parameters are usually: (matcher, sub, obj, act), use model matcher by default when matcher is "".
 func (e *SyncedEnforcer) EnforceWithMatcher(matcher string, rvals ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.EnforceWithMatcher(matcher, rvals...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// EnforceEx explain enforcement by informing matched rules.
 func (e *SyncedEnforcer) EnforceEx(rvals ...interface{}) (bool, []string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.EnforceEx(rvals...)
+	_ = "STUB: not implemented"
+	return false, nil, nil
 }
 
-// EnforceExWithMatcher use a custom matcher and explain enforcement by informing matched rules.
 func (e *SyncedEnforcer) EnforceExWithMatcher(matcher string, rvals ...interface{}) (bool, []string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.EnforceExWithMatcher(matcher, rvals...)
+	_ = "STUB: not implemented"
+	return false, nil, nil
 }
 
-// BatchEnforce enforce in batches.
 func (e *SyncedEnforcer) BatchEnforce(requests [][]interface{}) ([]bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.BatchEnforce(requests)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// BatchEnforceWithMatcher enforce with matcher in batches.
 func (e *SyncedEnforcer) BatchEnforceWithMatcher(matcher string, requests [][]interface{}) ([]bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.BatchEnforceWithMatcher(matcher, requests)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllSubjects gets the list of subjects that show up in the current policy.
 func (e *SyncedEnforcer) GetAllSubjects() ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllSubjects()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllNamedSubjects gets the list of subjects that show up in the current named policy.
 func (e *SyncedEnforcer) GetAllNamedSubjects(ptype string) ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllNamedSubjects(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllObjects gets the list of objects that show up in the current policy.
 func (e *SyncedEnforcer) GetAllObjects() ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllObjects()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllNamedObjects gets the list of objects that show up in the current named policy.
 func (e *SyncedEnforcer) GetAllNamedObjects(ptype string) ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllNamedObjects(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllActions gets the list of actions that show up in the current policy.
 func (e *SyncedEnforcer) GetAllActions() ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllActions()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllNamedActions gets the list of actions that show up in the current named policy.
 func (e *SyncedEnforcer) GetAllNamedActions(ptype string) ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllNamedActions(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllRoles gets the list of roles that show up in the current policy.
 func (e *SyncedEnforcer) GetAllRoles() ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllRoles()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllNamedRoles gets the list of roles that show up in the current named policy.
 func (e *SyncedEnforcer) GetAllNamedRoles(ptype string) ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllNamedRoles(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetAllUsers gets the list of users that show up in the current policy.
 func (e *SyncedEnforcer) GetAllUsers() ([]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetAllUsers()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetPolicy gets all the authorization rules in the policy.
 func (e *SyncedEnforcer) GetPolicy() ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetPolicy()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetFilteredPolicy gets all the authorization rules in the policy, field filters can be specified.
 func (e *SyncedEnforcer) GetFilteredPolicy(fieldIndex int, fieldValues ...string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetFilteredPolicy(fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetNamedPolicy gets all the authorization rules in the named policy.
 func (e *SyncedEnforcer) GetNamedPolicy(ptype string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetNamedPolicy(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetFilteredNamedPolicy gets all the authorization rules in the named policy, field filters can be specified.
 func (e *SyncedEnforcer) GetFilteredNamedPolicy(ptype string, fieldIndex int, fieldValues ...string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetFilteredNamedPolicy(ptype, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetGroupingPolicy gets all the role inheritance rules in the policy.
 func (e *SyncedEnforcer) GetGroupingPolicy() ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetGroupingPolicy()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetFilteredGroupingPolicy gets all the role inheritance rules in the policy, field filters can be specified.
 func (e *SyncedEnforcer) GetFilteredGroupingPolicy(fieldIndex int, fieldValues ...string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetFilteredGroupingPolicy(fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetNamedGroupingPolicy gets all the role inheritance rules in the policy.
 func (e *SyncedEnforcer) GetNamedGroupingPolicy(ptype string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetNamedGroupingPolicy(ptype)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// GetFilteredNamedGroupingPolicy gets all the role inheritance rules in the policy, field filters can be specified.
 func (e *SyncedEnforcer) GetFilteredNamedGroupingPolicy(ptype string, fieldIndex int, fieldValues ...string) ([][]string, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.GetFilteredNamedGroupingPolicy(ptype, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// HasPolicy determines whether an authorization rule exists.
 func (e *SyncedEnforcer) HasPolicy(params ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.HasPolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// HasNamedPolicy determines whether a named authorization rule exists.
 func (e *SyncedEnforcer) HasNamedPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.HasNamedPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddPolicy adds an authorization rule to the current policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
 func (e *SyncedEnforcer) AddPolicy(params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddPolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddPolicies adds authorization rules to the current policy.
-// If the rule already exists, the function returns false for the corresponding rule and the rule will not be added.
-// Otherwise the function returns true for the corresponding rule by adding the new rule.
 func (e *SyncedEnforcer) AddPolicies(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddPolicies(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddPoliciesEx adds authorization rules to the current policy.
-// If the rule already exists, the rule will not be added.
-// But unlike AddPolicies, other non-existent rules are added instead of returning false directly.
 func (e *SyncedEnforcer) AddPoliciesEx(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddPoliciesEx(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedPolicy adds an authorization rule to the current named policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
 func (e *SyncedEnforcer) AddNamedPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedPolicies adds authorization rules to the current named policy.
-// If the rule already exists, the function returns false for the corresponding rule and the rule will not be added.
-// Otherwise the function returns true for the corresponding by adding the new rule.
 func (e *SyncedEnforcer) AddNamedPolicies(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedPolicies(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedPoliciesEx adds authorization rules to the current named policy.
-// If the rule already exists, the rule will not be added.
-// But unlike AddNamedPolicies, other non-existent rules are added instead of returning false directly.
 func (e *SyncedEnforcer) AddNamedPoliciesEx(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedPoliciesEx(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemovePolicy removes an authorization rule from the current policy.
 func (e *SyncedEnforcer) RemovePolicy(params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemovePolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// UpdatePolicy updates an authorization rule from the current policy.
 func (e *SyncedEnforcer) UpdatePolicy(oldPolicy []string, newPolicy []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdatePolicy(oldPolicy, newPolicy)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateNamedPolicy(ptype string, p1 []string, p2 []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateNamedPolicy(ptype, p1, p2)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// UpdatePolicies updates authorization rules from the current policies.
 func (e *SyncedEnforcer) UpdatePolicies(oldPolices [][]string, newPolicies [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdatePolicies(oldPolices, newPolicies)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateNamedPolicies(ptype string, p1 [][]string, p2 [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateNamedPolicies(ptype, p1, p2)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateFilteredPolicies(newPolicies [][]string, fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateFilteredPolicies(newPolicies, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateFilteredNamedPolicies(ptype string, newPolicies [][]string, fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateFilteredNamedPolicies(ptype, newPolicies, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemovePolicies removes authorization rules from the current policy.
 func (e *SyncedEnforcer) RemovePolicies(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemovePolicies(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveFilteredPolicy removes an authorization rule from the current policy, field filters can be specified.
 func (e *SyncedEnforcer) RemoveFilteredPolicy(fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveFilteredPolicy(fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveNamedPolicy removes an authorization rule from the current named policy.
 func (e *SyncedEnforcer) RemoveNamedPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveNamedPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveNamedPolicies removes authorization rules from the current named policy.
 func (e *SyncedEnforcer) RemoveNamedPolicies(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveNamedPolicies(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveFilteredNamedPolicy removes an authorization rule from the current named policy, field filters can be specified.
 func (e *SyncedEnforcer) RemoveFilteredNamedPolicy(ptype string, fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveFilteredNamedPolicy(ptype, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// HasGroupingPolicy determines whether a role inheritance rule exists.
 func (e *SyncedEnforcer) HasGroupingPolicy(params ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.HasGroupingPolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// HasNamedGroupingPolicy determines whether a named role inheritance rule exists.
 func (e *SyncedEnforcer) HasNamedGroupingPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.RLock()
-	defer e.m.RUnlock()
-	return e.Enforcer.HasNamedGroupingPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddGroupingPolicy adds a role inheritance rule to the current policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
 func (e *SyncedEnforcer) AddGroupingPolicy(params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddGroupingPolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddGroupingPolicies adds role inheritance rulea to the current policy.
-// If the rule already exists, the function returns false for the corresponding policy rule and the rule will not be added.
-// Otherwise the function returns true for the corresponding policy rule by adding the new rule.
 func (e *SyncedEnforcer) AddGroupingPolicies(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddGroupingPolicies(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddGroupingPoliciesEx adds role inheritance rules to the current policy.
-// If the rule already exists, the rule will not be added.
-// But unlike AddGroupingPolicies, other non-existent rules are added instead of returning false directly.
 func (e *SyncedEnforcer) AddGroupingPoliciesEx(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddGroupingPoliciesEx(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedGroupingPolicy adds a named role inheritance rule to the current policy.
-// If the rule already exists, the function returns false and the rule will not be added.
-// Otherwise the function returns true by adding the new rule.
 func (e *SyncedEnforcer) AddNamedGroupingPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedGroupingPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedGroupingPolicies adds named role inheritance rules to the current policy.
-// If the rule already exists, the function returns false for the corresponding policy rule and the rule will not be added.
-// Otherwise the function returns true for the corresponding policy rule by adding the new rule.
 func (e *SyncedEnforcer) AddNamedGroupingPolicies(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedGroupingPolicies(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddNamedGroupingPoliciesEx adds named role inheritance rules to the current policy.
-// If the rule already exists, the rule will not be added.
-// But unlike AddNamedGroupingPolicies, other non-existent rules are added instead of returning false directly.
 func (e *SyncedEnforcer) AddNamedGroupingPoliciesEx(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.AddNamedGroupingPoliciesEx(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveGroupingPolicy removes a role inheritance rule from the current policy.
 func (e *SyncedEnforcer) RemoveGroupingPolicy(params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveGroupingPolicy(params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveGroupingPolicies removes role inheritance rules from the current policy.
 func (e *SyncedEnforcer) RemoveGroupingPolicies(rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveGroupingPolicies(rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveFilteredGroupingPolicy removes a role inheritance rule from the current policy, field filters can be specified.
 func (e *SyncedEnforcer) RemoveFilteredGroupingPolicy(fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveFilteredGroupingPolicy(fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveNamedGroupingPolicy removes a role inheritance rule from the current named policy.
 func (e *SyncedEnforcer) RemoveNamedGroupingPolicy(ptype string, params ...interface{}) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveNamedGroupingPolicy(ptype, params...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveNamedGroupingPolicies removes role inheritance rules from the current named policy.
 func (e *SyncedEnforcer) RemoveNamedGroupingPolicies(ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveNamedGroupingPolicies(ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateGroupingPolicy(oldRule []string, newRule []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateGroupingPolicy(oldRule, newRule)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateGroupingPolicies(oldRules [][]string, newRules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateGroupingPolicies(oldRules, newRules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateNamedGroupingPolicy(ptype string, oldRule []string, newRule []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateNamedGroupingPolicy(ptype, oldRule, newRule)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) UpdateNamedGroupingPolicies(ptype string, oldRules [][]string, newRules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.UpdateNamedGroupingPolicies(ptype, oldRules, newRules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// RemoveFilteredNamedGroupingPolicy removes a role inheritance rule from the current named policy, field filters can be specified.
 func (e *SyncedEnforcer) RemoveFilteredNamedGroupingPolicy(ptype string, fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.RemoveFilteredNamedGroupingPolicy(ptype, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
-// AddFunction adds a customized function.
 func (e *SyncedEnforcer) AddFunction(name string, function govaluate.ExpressionFunction) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	e.Enforcer.AddFunction(name, function)
+	_ = "STUB: not implemented"
+	return
 }
 
 func (e *SyncedEnforcer) SelfAddPolicy(sec string, ptype string, rule []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfAddPolicy(sec, ptype, rule)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfAddPolicies(sec string, ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfAddPolicies(sec, ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfAddPoliciesEx(sec string, ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfAddPoliciesEx(sec, ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfRemovePolicy(sec string, ptype string, rule []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfRemovePolicy(sec, ptype, rule)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfRemovePolicies(sec string, ptype string, rules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfRemovePolicies(sec, ptype, rules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfRemoveFilteredPolicy(sec string, ptype string, fieldIndex int, fieldValues ...string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfRemoveFilteredPolicy(sec, ptype, fieldIndex, fieldValues...)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfUpdatePolicy(sec string, ptype string, oldRule, newRule []string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfUpdatePolicy(sec, ptype, oldRule, newRule)
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (e *SyncedEnforcer) SelfUpdatePolicies(sec string, ptype string, oldRules, newRules [][]string) (bool, error) {
-	e.m.Lock()
-	defer e.m.Unlock()
-	return e.Enforcer.SelfUpdatePolicies(sec, ptype, oldRules, newRules)
+	_ = "STUB: not implemented"
+	return false, nil
 }
