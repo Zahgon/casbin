@@ -1,20 +1,3 @@
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 package casbin
 
 import (
@@ -31,9 +14,7 @@ var (
 	_ IEnforcer = &CachedEnforcer{}
 )
 
-// IEnforcer is the API interface of Enforcer.
 type IEnforcer interface {
-	/* Enforcer API */
 	InitWithFile(modelPath string, policyPath string) error
 	InitWithAdapter(modelPath string, adapter persist.Adapter) error
 	InitWithModelAndAdapter(m model.Model, adapter persist.Adapter) error
@@ -66,7 +47,6 @@ type IEnforcer interface {
 	BatchEnforceWithMatcher(matcher string, requests [][]interface{}) ([]bool, error)
 	Explain(rvals ...interface{}) (string, error)
 
-	/* RBAC API */
 	GetRolesForUser(name string, domain ...string) ([]string, error)
 	GetUsersForRole(name string, domain ...string) ([]string, error)
 	HasRoleForUser(name string, role string, domain ...string) (bool, error)
@@ -86,7 +66,6 @@ type IEnforcer interface {
 	DeleteRole(role string) (bool, error)
 	DeletePermission(permission ...string) (bool, error)
 
-	/* RBAC API with domains*/
 	GetUsersForRoleInDomain(name string, domain string) []string
 	GetRolesForUserInDomain(name string, domain string) []string
 	GetPermissionsForUserInDomain(user string, domain string) [][]string
@@ -99,7 +78,6 @@ type IEnforcer interface {
 	GetAllDomains() ([]string, error)
 	GetAllRolesByDomain(domain string) ([]string, error)
 
-	/* Management API */
 	GetAllSubjects() ([]string, error)
 	GetAllNamedSubjects(ptype string) ([]string, error)
 	GetAllObjects() ([]string, error)
@@ -156,7 +134,6 @@ type IEnforcer interface {
 	UpdateNamedGroupingPolicy(ptype string, oldRule []string, newRule []string) (bool, error)
 	UpdateNamedGroupingPolicies(ptype string, oldRules [][]string, newRules [][]string) (bool, error)
 
-	/* Management API with autoNotifyWatcher disabled */
 	SelfAddPolicy(sec string, ptype string, rule []string) (bool, error)
 	SelfAddPolicies(sec string, ptype string, rules [][]string) (bool, error)
 	SelfAddPoliciesEx(sec string, ptype string, rules [][]string) (bool, error)
@@ -169,11 +146,10 @@ type IEnforcer interface {
 
 var _ IDistributedEnforcer = &DistributedEnforcer{}
 
-// IDistributedEnforcer defines dispatcher enforcer.
 type IDistributedEnforcer interface {
 	IEnforcer
 	SetDispatcher(dispatcher persist.Dispatcher)
-	/* Management API for DistributedEnforcer*/
+
 	AddPoliciesSelf(shouldPersist func() bool, sec string, ptype string, rules [][]string) (affected [][]string, err error)
 	RemovePoliciesSelf(shouldPersist func() bool, sec string, ptype string, rules [][]string) (affected [][]string, err error)
 	RemoveFilteredPolicySelf(shouldPersist func() bool, sec string, ptype string, fieldIndex int, fieldValues ...string) (affected [][]string, err error)

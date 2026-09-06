@@ -1,27 +1,7 @@
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 package util
 
 import (
-	"encoding/json"
 	"regexp"
-	"sort"
-	"strings"
 	"sync"
 )
 
@@ -30,300 +10,54 @@ var evalReg = regexp.MustCompile(`\beval\((?P<rule>[^)]*)\)`)
 var escapeAssertionRegex = regexp.MustCompile(`([()\s|&,=!><+\-*/]|^)((r|p)[0-9]*)\.`)
 
 func JsonToMap(jsonStr string) (map[string]interface{}, error) {
-	result := make(map[string]interface{})
-	err := json.Unmarshal([]byte(jsonStr), &result)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-// EscapeAssertion escapes the dots in the assertion, because the expression evaluation doesn't support such variable names.
-func EscapeAssertion(s string) string {
-	s = escapeAssertionRegex.ReplaceAllStringFunc(s, func(m string) string {
-		// Replace only the last dot with underscore (preserve the prefix character)
-		lastDotIdx := strings.LastIndex(m, ".")
-		if lastDotIdx > 0 {
-			return m[:lastDotIdx] + "_"
-		}
-		return m
-	})
-	return s
-}
+func EscapeAssertion(s string) string { _ = "STUB: not implemented"; return "" }
 
-// RemoveComments removes the comments starting with # in the text.
-func RemoveComments(s string) string {
-	pos := strings.Index(s, "#")
-	if pos == -1 {
-		return s
-	}
-	return strings.TrimSpace(s[0:pos])
-}
+func RemoveComments(s string) string { _ = "STUB: not implemented"; return "" }
 
-// ArrayEquals determines whether two string arrays are identical.
-func ArrayEquals(a []string, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
+func ArrayEquals(a []string, b []string) bool { _ = "STUB: not implemented"; return false }
 
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
+func Array2DEquals(a [][]string, b [][]string) bool { _ = "STUB: not implemented"; return false }
 
-// Array2DEquals determines whether two 2-dimensional string arrays are identical.
-func Array2DEquals(a [][]string, b [][]string) bool {
-	if len(a) != len(b) {
-		return false
-	}
+func SortArray2D(arr [][]string) { _ = "STUB: not implemented"; return }
 
-	for i, v := range a {
-		if !ArrayEquals(v, b[i]) {
-			return false
-		}
-	}
-	return true
-}
+func SortedArray2DEquals(a [][]string, b [][]string) bool { _ = "STUB: not implemented"; return false }
 
-// SortArray2D  Sorts the two-dimensional string array.
-func SortArray2D(arr [][]string) {
-	if len(arr) == 0 {
-		return
-	}
-	sort.Slice(arr, func(i, j int) bool {
-		minArrLen := len(arr[i])
-		if len(arr[j]) < minArrLen {
-			minArrLen = len(arr[j])
-		}
-		for k := 0; k < minArrLen; k++ {
-			if arr[i][k] != arr[j][k] {
-				return arr[i][k] < arr[j][k]
-			}
-		}
-		return len(arr[i]) < len(arr[j])
-	})
-}
+func ArrayRemoveDuplicates(s *[]string) { _ = "STUB: not implemented"; return }
 
-// SortedArray2DEquals determines whether two 2-dimensional string arrays are identical.
-func SortedArray2DEquals(a [][]string, b [][]string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	copyA := make([][]string, len(a))
-	copy(copyA, a)
-	copyB := make([][]string, len(b))
-	copy(copyB, b)
+func ArrayToString(s []string) string { _ = "STUB: not implemented"; return "" }
 
-	SortArray2D(copyA)
-	SortArray2D(copyB)
+func ParamsToString(s ...string) string { _ = "STUB: not implemented"; return "" }
 
-	for i, v := range copyA {
-		if !ArrayEquals(v, copyB[i]) {
-			return false
-		}
-	}
-	return true
-}
+func SetEquals(a []string, b []string) bool { _ = "STUB: not implemented"; return false }
 
-// ArrayRemoveDuplicates removes any duplicated elements in a string array.
-func ArrayRemoveDuplicates(s *[]string) {
-	found := make(map[string]bool)
-	j := 0
-	for i, x := range *s {
-		if !found[x] {
-			found[x] = true
-			(*s)[j] = (*s)[i]
-			j++
-		}
-	}
-	*s = (*s)[:j]
-}
+func SetEqualsInt(a []int, b []int) bool { _ = "STUB: not implemented"; return false }
 
-// ArrayToString gets a printable string for a string array.
-func ArrayToString(s []string) string {
-	return strings.Join(s, ", ")
-}
+func Set2DEquals(a [][]string, b [][]string) bool { _ = "STUB: not implemented"; return false }
 
-// ParamsToString gets a printable string for variable number of parameters.
-func ParamsToString(s ...string) string {
-	return strings.Join(s, ", ")
-}
+func JoinSlice(a string, b ...string) []string { _ = "STUB: not implemented"; return nil }
 
-// SetEquals determines whether two string sets are identical.
-func SetEquals(a []string, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
+func JoinSliceAny(a string, b ...string) []interface{} { _ = "STUB: not implemented"; return nil }
 
-	sort.Strings(a)
-	sort.Strings(b)
+func SetSubtract(a []string, b []string) []string { _ = "STUB: not implemented"; return nil }
 
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
+func HasEval(s string) bool { _ = "STUB: not implemented"; return false }
 
-// SetEquals determines whether two int sets are identical.
-func SetEqualsInt(a []int, b []int) bool {
-	if len(a) != len(b) {
-		return false
-	}
+func ReplaceEval(s string, rule string) string { _ = "STUB: not implemented"; return "" }
 
-	sort.Ints(a)
-	sort.Ints(b)
-
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
-// Set2DEquals determines whether two string slice sets are identical.
-func Set2DEquals(a [][]string, b [][]string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-
-	var aa []string
-	for _, v := range a {
-		sort.Strings(v)
-		aa = append(aa, strings.Join(v, ", "))
-	}
-	var bb []string
-	for _, v := range b {
-		sort.Strings(v)
-		bb = append(bb, strings.Join(v, ", "))
-	}
-
-	return SetEquals(aa, bb)
-}
-
-// JoinSlice joins a string and a slice into a new slice.
-func JoinSlice(a string, b ...string) []string {
-	res := make([]string, 0, len(b)+1)
-
-	res = append(res, a)
-	res = append(res, b...)
-
-	return res
-}
-
-// JoinSliceAny joins a string and a slice into a new interface{} slice.
-func JoinSliceAny(a string, b ...string) []interface{} {
-	res := make([]interface{}, 0, len(b)+1)
-
-	res = append(res, a)
-	for _, s := range b {
-		res = append(res, s)
-	}
-
-	return res
-}
-
-// SetSubtract returns the elements in `a` that aren't in `b`.
-func SetSubtract(a []string, b []string) []string {
-	mb := make(map[string]struct{}, len(b))
-	for _, x := range b {
-		mb[x] = struct{}{}
-	}
-	var diff []string
-	for _, x := range a {
-		if _, found := mb[x]; !found {
-			diff = append(diff, x)
-		}
-	}
-	return diff
-}
-
-// HasEval determine whether matcher contains function eval.
-func HasEval(s string) bool {
-	return evalReg.MatchString(s)
-}
-
-// ReplaceEval replace function eval with the value of its parameters.
-func ReplaceEval(s string, rule string) string {
-	return evalReg.ReplaceAllString(s, "("+rule+")")
-}
-
-// ReplaceEvalWithMap replace function eval with the value of its parameters via given sets.
 func ReplaceEvalWithMap(src string, sets map[string]string) string {
-	return evalReg.ReplaceAllStringFunc(src, func(s string) string {
-		subs := evalReg.FindStringSubmatch(s)
-		if subs == nil {
-			return s
-		}
-		key := subs[1]
-		value, found := sets[key]
-		if !found {
-			return s
-		}
-		return evalReg.ReplaceAllString(s, value)
-	})
+	_ = "STUB: not implemented"
+	return ""
 }
 
-// GetEvalValue returns the parameters of function eval.
-func GetEvalValue(s string) []string {
-	subMatch := evalReg.FindAllStringSubmatch(s, -1)
-	var rules []string
-	for _, rule := range subMatch {
-		rules = append(rules, rule[1])
-	}
-	return rules
-}
+func GetEvalValue(s string) []string { _ = "STUB: not implemented"; return nil }
 
-// EscapeStringLiterals escapes backslashes in string literals within an expression
-// to ensure consistent handling between govaluate (which interprets escape sequences)
-// and CSV parsing (which treats backslashes as literal characters).
-// This function doubles all backslashes within single-quoted and double-quoted strings.
-func EscapeStringLiterals(expr string) string {
-	var result strings.Builder
-	inString := false
-	var quote rune
+func EscapeStringLiterals(expr string) string { _ = "STUB: not implemented"; return "" }
 
-	for _, ch := range expr {
-		if inString {
-			result.WriteRune(ch)
-			switch ch {
-			case '\\':
-				// Found a backslash inside a string - double it
-				result.WriteRune('\\')
-			case quote:
-				// End of string literal
-				inString = false
-			}
-			continue
-		}
-
-		// Not inside a string literal
-		if ch == '\'' || ch == '"' {
-			inString = true
-			quote = ch
-		}
-		result.WriteRune(ch)
-	}
-
-	return result.String()
-}
-
-func RemoveDuplicateElement(s []string) []string {
-	result := make([]string, 0, len(s))
-	temp := map[string]struct{}{}
-	for _, item := range s {
-		if _, ok := temp[item]; !ok {
-			temp[item] = struct{}{}
-			result = append(result, item)
-		}
-	}
-	return result
-}
+func RemoveDuplicateElement(s []string) []string { _ = "STUB: not implemented"; return nil }
 
 type node struct {
 	key   interface{}
@@ -339,93 +73,34 @@ type LRUCache struct {
 	tail     *node
 }
 
-func NewLRUCache(capacity int) *LRUCache {
-	cache := &LRUCache{}
-	cache.capacity = capacity
-	cache.m = map[interface{}]*node{}
+func NewLRUCache(capacity int) *LRUCache { _ = "STUB: not implemented"; return nil }
 
-	head := &node{}
-	tail := &node{}
+func (cache *LRUCache) remove(n *node, listOnly bool) { _ = "STUB: not implemented"; return }
 
-	head.next = tail
-	tail.prev = head
+func (cache *LRUCache) add(n *node, listOnly bool) { _ = "STUB: not implemented"; return }
 
-	cache.head = head
-	cache.tail = tail
-
-	return cache
-}
-
-func (cache *LRUCache) remove(n *node, listOnly bool) {
-	if !listOnly {
-		delete(cache.m, n.key)
-	}
-	n.prev.next = n.next
-	n.next.prev = n.prev
-}
-
-func (cache *LRUCache) add(n *node, listOnly bool) {
-	if !listOnly {
-		cache.m[n.key] = n
-	}
-	headNext := cache.head.next
-	cache.head.next = n
-	headNext.prev = n
-	n.next = headNext
-	n.prev = cache.head
-}
-
-func (cache *LRUCache) moveToHead(n *node) {
-	cache.remove(n, true)
-	cache.add(n, true)
-}
+func (cache *LRUCache) moveToHead(n *node) { _ = "STUB: not implemented"; return }
 
 func (cache *LRUCache) Get(key interface{}) (value interface{}, ok bool) {
-	n, ok := cache.m[key]
-	if ok {
-		cache.moveToHead(n)
-		return n.value, ok
-	} else {
-		return nil, ok
-	}
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
-func (cache *LRUCache) Put(key interface{}, value interface{}) {
-	if cache.capacity <= 0 {
-		return
-	}
-
-	n, ok := cache.m[key]
-	if ok {
-		cache.remove(n, false)
-	} else {
-		n = &node{key, value, nil, nil}
-		if len(cache.m) >= cache.capacity {
-			cache.remove(cache.tail.prev, false)
-		}
-	}
-	cache.add(n, false)
-}
+func (cache *LRUCache) Put(key interface{}, value interface{}) { _ = "STUB: not implemented"; return }
 
 type SyncLRUCache struct {
 	rwm sync.RWMutex
 	*LRUCache
 }
 
-func NewSyncLRUCache(capacity int) *SyncLRUCache {
-	cache := &SyncLRUCache{}
-	cache.LRUCache = NewLRUCache(capacity)
-	return cache
-}
+func NewSyncLRUCache(capacity int) *SyncLRUCache { _ = "STUB: not implemented"; return nil }
 
 func (cache *SyncLRUCache) Get(key interface{}) (value interface{}, ok bool) {
-	cache.rwm.Lock()
-	defer cache.rwm.Unlock()
-	return cache.LRUCache.Get(key)
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
 func (cache *SyncLRUCache) Put(key interface{}, value interface{}) {
-	cache.rwm.Lock()
-	defer cache.rwm.Unlock()
-	cache.LRUCache.Put(key, value)
+	_ = "STUB: not implemented"
+	return
 }
